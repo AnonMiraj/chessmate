@@ -47,7 +47,7 @@ public:
             board[ch].push_back(dummy);
         }
 
-        for(int idx = 8; idx >= 1; idx--) {
+        for(int idx = 1; idx <= 8; idx++) {
             int fileInc = 0;
             for(char ch = 'a'; ch <= 'h'; ch++) {
                 int x = ch - 97 + 1;
@@ -59,7 +59,7 @@ public:
                 sq.file = ch;
                 sq.rank = idx;
 
-                sq.color = (s%2==1) ? RAYWHITE : DARKPURPLE;
+                sq.color = (s%2==1) ? DARKPURPLE : RAYWHITE;
                 sq.x = fileInc;
                 sq.y = rankInc;
                 board[ch].push_back(sq);
