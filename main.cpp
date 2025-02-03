@@ -29,17 +29,18 @@ int main() {
         int x = GetMousePosition().x;
         int y = GetMousePosition().y;
 
-
         for(int idx = 1; idx <= 8; idx++) {
             for(char ch = 'a'; ch <= 'h'; ch++) {
                 Square square = board.board[ch][idx];
+                int posX = square.x;
+                int posY = square.y;
 
-                if (x >= square.x && x <= (square.x+125) && y >= square.y && y <= (square.y+125)) {
+                if (x >= posX && x <= (posX+125) && y >= posY && y <= (posY+125)) {
                     file = square.file;
                     rank = square.rank;
                 }
 
-                DrawRectangle(square.x, square.y, squareWidth, squareWidth, square.color);
+                DrawRectangle(posX, posY, squareWidth, squareWidth, square.color);
                 DrawTexture(square.piece.image, square.x, square.y, WHITE);
             }
         }
@@ -49,7 +50,6 @@ int main() {
             board.board[file][rank].piece.image = empty;
         }
 
-        // implement drag and drop
         if (IsMouseButtonDown(0)) {
             DrawTexture(temp, x-60, y-60, WHITE);
         }
@@ -58,8 +58,6 @@ int main() {
             board.board[file][rank].piece.image = temp;
         }
         
-        //
-
         EndDrawing();
     }
 

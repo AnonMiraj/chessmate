@@ -20,8 +20,8 @@ public:
 
 class Square {
 public:
-    Rectangle rec;
     Color color;
+    Piece piece;
 
     char file;
     int rank;
@@ -29,10 +29,6 @@ public:
     int x; // for rendering
     int y;
 
-    Piece piece;
-
-    Square() {
-    }
 };
 
 class Board {
@@ -42,6 +38,7 @@ public:
     Board() {
         int rankInc = 875;
 
+        // to make the vector 1-based index
         for(char ch = 'a'; ch <= 'h'; ch++) {
             Square dummy;
             board[ch].push_back(dummy);
@@ -68,7 +65,6 @@ public:
             rankInc -= squareWidth;
         }
 
-        // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
         Image r = LoadImage("./pieces/white/rook.png");
         Image n = LoadImage("./pieces/white/knight.png");
         Image b = LoadImage("./pieces/white/bishop.png");
@@ -112,8 +108,11 @@ public:
         texture_map['q'] = tq;
         texture_map['k'] = tk;
         texture_map['p'] = tp;
+
         int rank = 8;
         char file = 'a';
+
+        // fen parsing
         for(int i = 0; i < fen.length(); i++) {
             if (fen[i] >= 'a' && fen[i] <= 'z' || fen[i] >= 'A' && fen[i] <= 'Z') {
                 board[file][rank].piece.image = texture_map[fen[i]];
@@ -124,8 +123,6 @@ public:
                 file = 'a';
             }
         }
-
-        //board['f'][5].piece.image = t2d2;
     }
 };
 
