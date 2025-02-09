@@ -11,11 +11,15 @@
 #define screenHeight 1000
 #define squareWidth 125
 
+#define P_WHITE 0
+#define P_BLACK 1
+
 using namespace std;
 
 class Piece {
 public:
     Texture2D image;
+    int piece_color;
 };
 
 class Square {
@@ -35,6 +39,9 @@ class Board {
 public:
     map<char, vector<Square>> board;
     string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+    int turn = P_WHITE;
+    int assign_ok = 0; // to check if we can assign the selected piece in the selected square
+
     Board() {
         int rankInc = 875;
 
@@ -116,6 +123,7 @@ public:
         for(int i = 0; i < fen.length(); i++) {
             if (fen[i] >= 'a' && fen[i] <= 'z' || fen[i] >= 'A' && fen[i] <= 'Z') {
                 board[file][rank].piece.image = texture_map[fen[i]];
+                board[file][rank].piece.piece_color = (fen[i] >= 'a' && fen[i] <= 'z') ? P_BLACK : P_WHITE;
             }
             file++;
             if (fen[i]=='/') {

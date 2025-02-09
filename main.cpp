@@ -19,8 +19,9 @@ int main() {
 
     int file;
     int rank;
-    Texture2D temp;
 
+    Piece temp_piece;
+    Texture2D temp;
     Texture2D empty;
 
     while (!WindowShouldClose()) {
@@ -46,16 +47,24 @@ int main() {
         }
 
         if (IsMouseButtonPressed(0)) {
-            temp = board.board[file][rank].piece.image;
-            board.board[file][rank].piece.image = empty;
+            if (board.board[file][rank].piece.piece_color == board.turn) {
+                temp = board.board[file][rank].piece.image;
+                temp_piece = board.board[file][rank].piece;
+                board.board[file][rank].piece.image = empty;
+                board.assign_ok = 1;
+            } else {
+                board.assign_ok = 0;
+            }
         }
 
         if (IsMouseButtonDown(0)) {
             DrawTexture(temp, x-60, y-60, WHITE);
         }
 
-        if (IsMouseButtonReleased(0)) {
-            board.board[file][rank].piece.image = temp;
+        if (IsMouseButtonReleased(0) && board.assign_ok) {
+            board.board[file][rank].piece = temp_piece;
+            temp = empty;
+            board.turn = board.turn == P_WHITE ? P_BLACK : P_WHITE;
         }
         
         EndDrawing();
