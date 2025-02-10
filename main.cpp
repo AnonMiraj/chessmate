@@ -17,11 +17,12 @@ int main() {
 
     Board board;
 
-    int file;
+    char file;
     int rank;
 
+    Square temp_square;
+    Square empty_square;
     Piece temp_piece;
-    Texture2D temp;
     Texture2D empty;
 
     while (!WindowShouldClose()) {
@@ -48,7 +49,7 @@ int main() {
 
         if (IsMouseButtonPressed(0)) {
             if (board.board[file][rank].piece.piece_color == board.turn) {
-                temp = board.board[file][rank].piece.image;
+                temp_square = board.board[file][rank];
                 temp_piece = board.board[file][rank].piece;
                 board.board[file][rank].piece.image = empty;
                 board.assign_ok = 1;
@@ -57,14 +58,54 @@ int main() {
             }
         }
 
+        // for the last selected piece
+        char prev_file = temp_square.file;
+        int prev_rank = temp_square.rank;
+
         if (IsMouseButtonDown(0)) {
-            DrawTexture(temp, x-60, y-60, WHITE);
+            if (prev_rank != -1) {
+                vector<Square*> sq_vec = board.board[prev_file][prev_rank].piece.getLegalSquares(board.board);
+                for(int i = 0; i < sq_vec.size(); i++) {
+                    Square* square = sq_vec[i];
+                    int posX = square->x;
+                    int posY = square->y;
+                    DrawRectangle(posX, posY, squareWidth-1, squareWidth-1, RED);
+                }
+                DrawTexture(temp_piece.image, x-60, y-60, WHITE);
+            }
         }
 
         if (IsMouseButtonReleased(0) && board.assign_ok) {
-            board.board[file][rank].piece = temp_piece;
-            temp = empty;
-            board.turn = board.turn == P_WHITE ? P_BLACK : P_WHITE;
+            vector<Square*> sq_vec = board.board[prev_file][prev_rank].piece.getLegalSquares(board.board);
+            bool assigned = false;
+
+            for(int i = 0; i < sq_vec.size(); i++) {
+                Square* square = sq_vec[i];
+                char l_file = square->file;
+                int l_rank = square->rank;
+
+                if (l_file == file && l_rank == rank) {
+                    board.board[prev_file][prev_rank].has_piece = false;
+
+                    board.board[file][rank].piece = temp_piece;
+                    board.board[file][rank].piece.cur_square = file+to_string(rank);
+                    board.board[file][rank].has_piece = true;
+                    board.turn = board.turn == P_WHITE ? P_BLACK : P_WHITE;
+
+                    temp_square.piece.image = empty;
+                    temp_piece.image = empty;
+                    assigned = true;
+                    cout << file << rank << endl;
+                    break;
+                }
+            }
+            if (!assigned) {
+                board.board[prev_file][prev_rank].has_piece = true;
+
+                board.board[prev_file][prev_rank].piece = temp_piece;
+                temp_square = empty_square;
+                temp_piece.image = empty;
+            }
         }
         
         EndDrawing();
